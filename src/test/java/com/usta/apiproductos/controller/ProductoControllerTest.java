@@ -152,7 +152,7 @@ class ProductoControllerTest {
         when(service.guardar(any(Producto.class), any())).thenReturn(productoCreado);
 
         // Act
-        Producto resultado = controller.guardar(nuevoProducto, null);
+        Producto resultado = controller.guardar(nuevoProducto, null, null);
 
         // Assert
         assertNotNull(resultado);
@@ -163,7 +163,7 @@ class ProductoControllerTest {
     }
 
     @Test
-    @DisplayName("Guardar - Debe crear un producto con imagen")
+    @DisplayName("Guardar - Debe crear un producto con URL de imagen")
     void testCrearProductoConImagen() {
         // Arrange
         Producto nuevoProducto = Producto.builder()
@@ -180,22 +180,22 @@ class ProductoControllerTest {
                 .descripcion("Teclado mecánico")
                 .tipo("Accesorios")
                 .precio(85.0)
-                .imagenUrl("https://imgbb.com/teclado123.jpg")
+                .imagenUrl("https://cdn.ejemplo.com/teclado123.jpg")
                 .activo(true)
                 .build();
 
-        String imagenBase64 = "data:image/jpeg;base64,/9j/4AAQSkZ...";
-        when(service.guardar(any(Producto.class), eq(imagenBase64)))
+        String imagenUrl = "https://cdn.ejemplo.com/teclado123.jpg";
+        when(service.guardar(any(Producto.class), eq(imagenUrl)))
                 .thenReturn(productoConImagen);
 
         // Act
-        Producto resultado = controller.guardar(nuevoProducto, imagenBase64);
+        Producto resultado = controller.guardar(nuevoProducto, imagenUrl, null);
 
         // Assert
         assertNotNull(resultado);
         assertEquals(4L, resultado.getId());
-        assertEquals("https://imgbb.com/teclado123.jpg", resultado.getImagenUrl());
-        verify(service, times(1)).guardar(any(Producto.class), eq(imagenBase64));
+        assertEquals("https://cdn.ejemplo.com/teclado123.jpg", resultado.getImagenUrl());
+        verify(service, times(1)).guardar(any(Producto.class), eq(imagenUrl));
     }
 
     // ============== PRUEBAS ACTUALIZAR ==============
@@ -352,7 +352,7 @@ class ProductoControllerTest {
 
         when(service.guardar(any(Producto.class), any())).thenReturn(creado);
 
-        Producto resultadoCrear = controller.guardar(nuevo, null);
+        Producto resultadoCrear = controller.guardar(nuevo, null, null);
         assertNotNull(resultadoCrear);
         assertEquals(100L, resultadoCrear.getId());
 

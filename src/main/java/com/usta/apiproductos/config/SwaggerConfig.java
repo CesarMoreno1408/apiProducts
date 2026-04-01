@@ -1,6 +1,5 @@
 package com.usta.apiproductos.config;
 
-
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API Productos")
                         .version("1.0")
-                        .description("API REST para gestión de productos con Azure SQL + ImgBB"));
+                        .description("API REST para gestion de productos con Azure SQL"));
     }
-
 }

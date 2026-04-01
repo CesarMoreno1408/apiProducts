@@ -1,6 +1,5 @@
 package com.usta.apiproductos.service;
 
-import com.usta.apiproductos.integration.ImgBBService;
 import com.usta.apiproductos.model.Producto;
 import com.usta.apiproductos.repository.ProductoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,9 +24,6 @@ class ProductoServiceTest {
 
     @Mock
     private ProductoRepository repository;
-
-    @Mock
-    private ImgBBService imgBBService;
 
     @InjectMocks
     private ProductoService service;
@@ -144,16 +141,14 @@ class ProductoServiceTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Laptop", resultado.getNombre());
-        verify(imgBBService, never()).subirImagen(anyString());
         verify(repository, times(1)).save(nuevoProducto);
     }
 
     @Test
-    @DisplayName("Debe guardar un producto con imagen exitosamente")
+    @DisplayName("Debe guardar un producto con URL de imagen exitosamente")
     void testGuardarConImagen() {
         // Arrange
-        String imagenBase64 = "data:image/jpeg;base64,/9j/4AAQSkZ...";
-        String urlImagen = "https://imgbb.com/imagen123.jpg";
+        String imagenUrl = "https://cdn.ejemplo.com/imagen123.jpg";
 
         Producto productoSinImagen = Producto.builder()
                 .nombre("Monitor")
@@ -163,15 +158,14 @@ class ProductoServiceTest {
                 .activo(true)
                 .build();
 
-        when(imgBBService.subirImagen(imagenBase64)).thenReturn(urlImagen);
-        when(repository.save(any(Producto.class))).thenReturn(producto);
+        when(repository.save(any(Producto.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        Producto resultado = service.guardar(productoSinImagen, imagenBase64);
+        Producto resultado = service.guardar(productoSinImagen, imagenUrl);
 
         // Assert
         assertNotNull(resultado);
-        verify(imgBBService, times(1)).subirImagen(imagenBase64);
+        assertEquals(imagenUrl, resultado.getImagenUrl());
         verify(repository, times(1)).save(any(Producto.class));
     }
 

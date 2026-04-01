@@ -31,9 +31,11 @@ public class ProductoController {
     @PostMapping
     public Producto guardar(
             @RequestBody Producto producto,
+            @RequestParam(required = false) String imagenUrl,
             @RequestParam(required = false) String imagenBase64) {
 
-        return service.guardar(producto, imagenBase64);
+        String imagenUrlFinal = imagenUrl != null ? imagenUrl : imagenBase64;
+        return service.guardar(producto, imagenUrlFinal);
     }
 
     // ACTUALIZAR
